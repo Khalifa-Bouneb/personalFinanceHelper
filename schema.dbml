@@ -1,0 +1,61 @@
+Enum transaction_sign {
+  positive
+  negative
+}
+
+Enum goal_type {
+  yearly
+  monthly
+}
+
+Table transactions {
+  id uuid [pk]
+  user_id int
+  amount decimal(10, 3)
+  transaction_date datetime [default: `now()`]
+  sign transaction_sign
+  category_id uuid
+  item_id uuid
+}
+
+Table users {
+  id int [pk, increment]
+  name varchar
+  email varchar [unique]
+  password_hash varchar
+  created_at datetime [default: `now()`]
+  currency varchar
+}
+
+Table categories {
+  id uuid [pk]
+  name varchar
+  color varchar
+  icon varchar
+  created_at datetime [default: `now()`]
+}
+
+Table items {
+  id uuid [pk]
+  name varchar
+  cost decimal(10, 2)
+  category_id uuid
+}
+
+Table goals {
+  id uuid [pk]
+  user_id int
+  category_id uuid
+  max_amount decimal(10, 2)
+  type goal_type
+  start_date date
+  end_date date
+  created_at datetime [default: `now()`]
+}
+
+Ref: transactions.user_id > users.id
+Ref: transactions.category_id > categories.id
+Ref: transactions.item_id > items.id
+Ref: goals.category_id > categories.id
+Ref: goals.user_id > users.id
+Ref: items.category_id > categories.id

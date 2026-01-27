@@ -1,0 +1,46 @@
+# Node
+node_modules/
+dist/
+.env
+*.log
+# Angular
+.angular/cache/
+# Editor
+.vscode/
+.DS_Store
+# OS
+Thumbs.db
+# Build
+/build/
+# Misc
+*.swp
+*.swo
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+# Maven
+/target/
+# IntelliJ
+.idea/
+*.iws
+*.ipr
+*.iml
+# Eclipse
+.project
+.classpath
+.c9/
+.settings/
+# Spring Boot
+spring-boot-backend/.env
+spring-boot-backend/.mvn/

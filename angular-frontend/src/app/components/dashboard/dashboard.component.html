@@ -1,0 +1,94 @@
+<div class="dashboard">
+  <h1>Finance Tracker Dashboard</h1>
+
+  <div *ngIf="loading" class="loading">Loading data...</div>
+
+  <div *ngIf="!loading">
+    <!-- Users Section -->
+    <section class="section">
+      <h2>👥 Users ({{ users.length }})</h2>
+      <div class="card-grid">
+        <div *ngFor="let user of users" class="card">
+          <h3>{{ user.name }}</h3>
+          <p><strong>Email:</strong> {{ user.email }}</p>
+          <p><strong>Currency:</strong> {{ user.currency || 'N/A' }}</p>
+          <p class="date">Joined: {{ user.createdAt | date:'short' }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="section">
+      <h2>📁 Categories ({{ categories.length }})</h2>
+      <div class="card-grid">
+        <div *ngFor="let category of categories" class="card category-card">
+          <div class="category-header" [style.background-color]="category.color">
+            <span class="icon">{{ category.icon }}</span>
+          </div>
+          <h3>{{ category.name }}</h3>
+          <p class="date">Created: {{ category.createdAt | date:'short' }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Transactions Section -->
+    <section class="section">
+      <h2>💰 Recent Transactions ({{ transactions.length }})</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>User</th>
+              <th>Category</th>
+              <th>Amount</th>
+              <th>Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let transaction of transactions">
+              <td>{{ transaction.transactionDate | date:'short' }}</td>
+              <td>{{ transaction.user?.name || 'Unknown' }}</td>
+              <td>
+                <span class="badge" [style.background-color]="transaction.category?.color">
+                  {{ transaction.category?.name || 'N/A' }}
+                </span>
+              </td>
+              <td class="amount" [class.positive]="transaction.sign === 'POSITIVE'" 
+                  [class.negative]="transaction.sign === 'NEGATIVE'">
+                {{ transaction.sign === 'POSITIVE' ? '+' : '-' }}${{ transaction.amount }}
+              </td>
+              <td>
+                <span class="badge" [class.positive]="transaction.sign === 'POSITIVE'" 
+                      [class.negative]="transaction.sign === 'NEGATIVE'">
+                  {{ transaction.sign }}
+                </span>
+              </td>
+              <td>
+                <button class="btn-delete" (click)="deleteTransaction(transaction.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Goals Section -->
+    <section class="section">
+      <h2>🎯 Financial Goals ({{ goals.length }})</h2>
+      <div class="card-grid">
+        <div *ngFor="let goal of goals" class="card goal-card">
+          <div class="goal-header">
+            <h3>{{ goal.category?.name || 'General' }} Goal</h3>
+            <span class="badge">{{ goal.type }}</span>
+          </div>
+          <p><strong>User:</strong> {{ goal.user?.name }}</p>
+          <p><strong>Max Amount:</strong> ${{ goal.maxAmount }}</p>
+          <p><strong>Period:</strong> {{ goal.startDate | date:'short' }} - {{ goal.endDate | date:'short' }}</p>
+          <button class="btn-delete" (click)="deleteGoal(goal.id)">Delete</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

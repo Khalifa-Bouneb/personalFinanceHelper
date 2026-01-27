@@ -1,0 +1,4 @@
+# See ../.gitignore for global ignores
+/node_modules/
+/dist/
+/.angular/cache/

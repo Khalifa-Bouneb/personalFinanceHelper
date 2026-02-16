@@ -1,20 +1,24 @@
-# Finance Tracker - Angular Frontend
+# Smart Finance Manager - Angular Frontend
 
-Modern Angular frontend for the Finance Tracker application.
+Modern Angular frontend for the Smart Finance Manager application with AI-powered features.
 
 ## Features
 
-- **Dashboard**: Overview of all entities (users, categories, transactions, goals)
-- **Real-time Data**: Fetches data from Spring Boot backend
-- **Responsive Design**: Modern, gradient-based UI with card layouts
-- **CRUD Operations**: Delete transactions and goals directly from the dashboard
+- **JWT Authentication** — Login/Register with token-based security
+- **Dashboard** — Overview with stats cards, category breakdown, monthly trends, and goal progress
+- **Transactions** — Add, view, and delete income/expense transactions
+- **Goals** — Set and track monthly/yearly spending goals per category
+- **OCR Smart Scan** — Upload receipt images or paste text for AI-powered extraction
+- **AI Forecasting** — View predicted end-of-month balance, daily spending forecasts, and anomaly alerts
+- **PDF Export** — Download branded financial reports
+- **Responsive Design** — Modern sidebar-based UI with card layouts
 
 ## Technology Stack
 
 - **Angular 17** (Standalone Components)
 - **TypeScript 5.2**
 - **RxJS 7.8**
-- **HttpClient** for API communication
+- **HttpClient** with JWT Interceptor for API communication
 
 ## Prerequisites
 

@@ -2,6 +2,7 @@ package com.finance.controller;
 
 import com.finance.model.Transaction;
 import com.finance.service.TransactionService;
+import com.finance.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +18,18 @@ import java.util.List;
 public class TransactionController {
     
     private final TransactionService transactionService;
+    private final TransactionRepository transactionRepository;
     
     // GET /api/transactions - Find all transactions
     @GetMapping
     public ResponseEntity<List<Transaction>> findAll() {
         return ResponseEntity.ok(transactionService.findMany());
+    }
+    
+    // GET /api/transactions/user/{userId} - Find transactions by user
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Transaction>> findByUser(@PathVariable Integer userId) {
+        return ResponseEntity.ok(transactionRepository.findByUserId(userId));
     }
     
     // GET /api/transactions/{id} - Find one transaction

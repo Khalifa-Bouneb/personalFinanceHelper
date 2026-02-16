@@ -7,6 +7,7 @@ import com.finance.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -25,6 +26,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final ItemRepository itemRepository;
     private final TransactionRepository transactionRepository;
     private final GoalRepository goalRepository;
+    private final PasswordEncoder passwordEncoder;
     
     @Override
     public void run(String... args) {
@@ -43,15 +45,15 @@ public class DatabaseSeeder implements CommandLineRunner {
         user1.setId(1);
         user1.setName("John Doe");
         user1.setEmail("john.doe@example.com");
-        user1.setPasswordHash("$2a$10$hashedpassword1");
-        user1.setCurrency("USD");
+        user1.setPasswordHash(passwordEncoder.encode("password123"));
+        user1.setCurrency("TND");
         user1.setCreatedAt(LocalDateTime.now());
         
         User user2 = new User();
         user2.setId(2);
         user2.setName("Jane Smith");
         user2.setEmail("jane.smith@example.com");
-        user2.setPasswordHash("$2a$10$hashedpassword2");
+        user2.setPasswordHash(passwordEncoder.encode("password123"));
         user2.setCurrency("EUR");
         user2.setCreatedAt(LocalDateTime.now());
         
@@ -88,9 +90,34 @@ public class DatabaseSeeder implements CommandLineRunner {
         salary.setColor("#4CAF50");
         salary.setIcon("attach_money");
         salary.setCreatedAt(LocalDateTime.now());
-        
+
+        Category restaurant = new Category();
+        restaurant.setName("Restaurant");
+        restaurant.setColor("#E91E63");
+        restaurant.setIcon("restaurant");
+        restaurant.setCreatedAt(LocalDateTime.now());
+
+        Category shopping = new Category();
+        shopping.setName("Shopping");
+        shopping.setColor("#00BCD4");
+        shopping.setIcon("shopping_bag");
+        shopping.setCreatedAt(LocalDateTime.now());
+
+        Category health = new Category();
+        health.setName("Health");
+        health.setColor("#F44336");
+        health.setIcon("local_hospital");
+        health.setCreatedAt(LocalDateTime.now());
+
+        Category education = new Category();
+        education.setName("Education");
+        education.setColor("#3F51B5");
+        education.setIcon("school");
+        education.setCreatedAt(LocalDateTime.now());
+
         List<Category> categories = categoryRepository.saveAll(
-                List.of(groceries, transport, entertainment, utilities, salary)
+                List.of(groceries, transport, entertainment, utilities, salary,
+                        restaurant, shopping, health, education)
         );
         log.info("Created {} categories", categories.size());
         
@@ -190,9 +217,64 @@ public class DatabaseSeeder implements CommandLineRunner {
         t6.setCategory(entertainment);
         t6.setItemId(movieTicket.getId());
         t6.setItem(movieTicket);
+
+        // Additional transactions for better forecasting data
+        Transaction t7 = new Transaction();
+        t7.setUserId(user1.getId());
+        t7.setUser(user1);
+        t7.setAmount(new BigDecimal("35.00"));
+        t7.setSign(TransactionSign.NEGATIVE);
+        t7.setTransactionDate(LocalDateTime.now().minusDays(18));
+        t7.setCategoryId(restaurant.getId());
+        t7.setCategory(restaurant);
+
+        Transaction t8 = new Transaction();
+        t8.setUserId(user1.getId());
+        t8.setUser(user1);
+        t8.setAmount(new BigDecimal("120.00"));
+        t8.setSign(TransactionSign.NEGATIVE);
+        t8.setTransactionDate(LocalDateTime.now().minusDays(12));
+        t8.setCategoryId(shopping.getId());
+        t8.setCategory(shopping);
+
+        Transaction t9 = new Transaction();
+        t9.setUserId(user1.getId());
+        t9.setUser(user1);
+        t9.setAmount(new BigDecimal("45.00"));
+        t9.setSign(TransactionSign.NEGATIVE);
+        t9.setTransactionDate(LocalDateTime.now().minusDays(8));
+        t9.setCategoryId(health.getId());
+        t9.setCategory(health);
+
+        Transaction t10 = new Transaction();
+        t10.setUserId(user1.getId());
+        t10.setUser(user1);
+        t10.setAmount(new BigDecimal("200.00"));
+        t10.setSign(TransactionSign.NEGATIVE);
+        t10.setTransactionDate(LocalDateTime.now().minusDays(5));
+        t10.setCategoryId(education.getId());
+        t10.setCategory(education);
+
+        Transaction t11 = new Transaction();
+        t11.setUserId(user1.getId());
+        t11.setUser(user1);
+        t11.setAmount(new BigDecimal("60.00"));
+        t11.setSign(TransactionSign.NEGATIVE);
+        t11.setTransactionDate(LocalDateTime.now().minusDays(3));
+        t11.setCategoryId(groceries.getId());
+        t11.setCategory(groceries);
+
+        Transaction t12 = new Transaction();
+        t12.setUserId(user1.getId());
+        t12.setUser(user1);
+        t12.setAmount(new BigDecimal("15.00"));
+        t12.setSign(TransactionSign.NEGATIVE);
+        t12.setTransactionDate(LocalDateTime.now().minusDays(1));
+        t12.setCategoryId(transport.getId());
+        t12.setCategory(transport);
         
         List<Transaction> transactions = transactionRepository.saveAll(
-                List.of(t1, t2, t3, t4, t5, t6)
+                List.of(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12)
         );
         log.info("Created {} transactions", transactions.size());
         

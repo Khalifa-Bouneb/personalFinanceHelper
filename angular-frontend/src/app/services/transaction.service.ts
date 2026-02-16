@@ -15,6 +15,10 @@ export class TransactionService {
         return this.http.get<Transaction[]>(this.apiUrl);
     }
 
+    findByUser(userId: number): Observable<Transaction[]> {
+        return this.http.get<Transaction[]>(`${this.apiUrl}/user/${userId}`);
+    }
+
     findOne(id: string): Observable<Transaction> {
         return this.http.get<Transaction>(`${this.apiUrl}/${id}`);
     }

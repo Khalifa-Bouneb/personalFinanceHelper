@@ -1,234 +1,171 @@
-# Finance Tracker - Full Stack Application
+# Smart Finance Manager 💰
 
-A complete financial tracking application with Spring Boot backend, MongoDB database, and Angular frontend.
+**Application Web de Gestion Financière Intelligente & Prédictive**
 
-## 📋 Overview
+A full-stack personal finance application combining **data sovereignty**, **fluid UX**, and **AI-powered intelligence** for budget management — built for students and young professionals.
 
-This application implements a comprehensive financial tracking system based on the provided DBML schema. It includes:
+## 🎯 Project Overview
 
-- **Users**: User account management
-- **Categories**: Transaction categorization with visual properties
-- **Items**: Specific items within categories
-- **Transactions**: Income and expense tracking
-- **Goals**: Monthly and yearly spending goals
+This project was built as part of the INDP2E program at **SUP'COM** (École Supérieure des Communications de Tunis).
+
+### Key Innovation
+Unlike traditional finance apps, Smart Finance Manager offers:
+- **Privacy-First** architecture with MongoDB (no bank connections required)
+- **AI-Powered OCR** receipt scanning using Groq/Llama
+- **Predictive Analytics** for budget forecasting
+- **Anomaly Detection** for unusual spending alerts
 
 ## 🏗️ Architecture
 
-### Backend: Spring Boot + MongoDB
-- **Framework**: Spring Boot 3.2.1
-- **Database**: MongoDB
-- **Language**: Java 17
-- **Build Tool**: Maven
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Angular 17 (Standalone Components) |
+| Backend | Spring Boot 3.2.1 + Java 17 |
+| Database | MongoDB |
+| AI/OCR | Groq API (Llama 3.3 70B + Llama 3.2 90B Vision) |
+| Auth | JWT + BCrypt |
+| PDF Export | iText 7 |
 
-### Frontend: Angular
-- **Framework**: Angular 17 (Standalone Components)
-- **Language**: TypeScript 5.2
-- **HTTP Client**: Angular HttpClient
+## ✨ Features
 
-## 📁 Project Structure
+### 🆓 Standard Pack (Free)
+- ✅ **CRUD Transactions** — Quick income/expense entry (Cash & Card)
+- ✅ **Dynamic Categorization** — Custom tags (e.g., "SupCom Project", "Outings")
+- ✅ **Monthly Visualization** — Pie charts and histograms
+- ✅ **Multi-Currency** — TND/EUR/USD support
+- ✅ **JWT Security** — Robust authentication with BCrypt password hashing
 
-```
-zc/
-├── schema.dbml                    # Database schema definition
-├── spring-boot-backend/           # Spring Boot backend
-│   ├── src/main/java/com/finance/
-│   │   ├── Application.java
-│   │   ├── config/
-│   │   │   └── DatabaseSeeder.java
-│   │   ├── controller/            # REST controllers
-│   │   ├── enums/                 # Enumerations
-│   │   ├── model/                 # Entity models
-│   │   ├── repository/            # MongoDB repositories
-│   │   └── service/               # Business logic
-│   ├── src/main/resources/
-│   │   └── application.properties
-│   └── pom.xml
-└── angular-frontend/              # Angular frontend
-    ├── src/app/
-    │   ├── components/
-    │   │   └── dashboard/
-    │   ├── models/
-    │   ├── services/
-    │   └── app.component.ts
-    ├── package.json
-    └── angular.json
-```
+### 🤖 Premium Pack (AI-Powered)
+- ✅ **Smart Scan (OCR)** — Photo of receipt → automatic extraction (Date, Amount, Category) via Groq Llama Vision
+- ✅ **Text Receipt Scan** — Paste receipt text for AI extraction
+- ✅ **AI Forecasting** — End-of-month balance prediction using linear regression
+- ✅ **Anomaly Detection** — Immediate alert if an expense exceeds category average by 20%+
+- ✅ **AI Budget Recommendations** — Personalized advice from Llama 3.3
+- ✅ **Certified PDF Reports** — Clean PDF export for administrative files
 
 ## 🚀 Getting Started
 
 ### Prerequisites
+- **Java 17+** and **Maven 3.6+**
+- **MongoDB 4.4+** running on `localhost:27017`
+- **Node.js 18+** and **npm**
+- **Groq API Key** (free at https://console.groq.com)
 
-1. **Java 17+** - For Spring Boot backend
-2. **Maven 3.6+** - For building Spring Boot
-3. **MongoDB 4.4+** - Database server
-4. **Node.js 18+** - For Angular frontend
-5. **npm** - Node package manager
-
-### Step 1: Start MongoDB
-
+### Step 1: Configure Groq API Key
 ```bash
-# Check if MongoDB is running
-sudo systemctl status mongod
+# Set environment variable
+export GROQ_API_KEY=gsk_your_key_here
 
-# Start MongoDB if not running
+# Or edit spring-boot-backend/src/main/resources/application.properties
+groq.api.key=gsk_your_key_here
+```
+
+### Step 2: Start MongoDB
+```bash
+# Windows
+mongod
+
+# Linux/Mac
 sudo systemctl start mongod
 ```
 
-### Step 2: Run Spring Boot Backend
-
+### Step 3: Run Backend
 ```bash
 cd spring-boot-backend
 mvn clean install
 mvn spring-boot:run
 ```
+Backend starts at `http://localhost:8080` with auto-seeded demo data.
 
-The backend will:
-- Start on `http://localhost:8080`
-- Automatically seed the database with sample data
-- Expose REST APIs at `/api/*`
-
-### Step 3: Run Angular Frontend
-
+### Step 4: Run Frontend
 ```bash
 cd angular-frontend
 npm install
 npm start
 ```
+Frontend at `http://localhost:4200`
 
-The frontend will be available at `http://localhost:4200`
+### Demo Credentials
+- **Email:** `john.doe@example.com`
+- **Password:** `password123`
 
-## 📊 Sample Data
+## 📊 API Endpoints
 
-The application automatically seeds the database with:
+### Authentication (Public)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Register new user |
+| POST | `/api/auth/login` | Login & get JWT token |
 
-- **2 Users**: John Doe, Jane Smith
-- **5 Categories**: Groceries, Transport, Entertainment, Utilities, Salary
-- **5 Items**: Milk, Bread, Gas/Fuel, Movie Ticket, Electricity Bill
-- **6 Transactions**: Mix of income and expenses
-- **3 Goals**: Monthly and yearly spending limits
+### Transactions (Authenticated)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/transactions` | Get all transactions |
+| GET | `/api/transactions/user/{userId}` | Get user's transactions |
+| POST | `/api/transactions` | Create transaction |
+| PUT | `/api/transactions/{id}` | Update transaction |
+| DELETE | `/api/transactions/{id}` | Delete transaction |
 
-## 🔌 API Endpoints
+### AI / OCR (Authenticated)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/ocr/scan` | Upload receipt image for AI OCR |
+| POST | `/api/ocr/scan-text` | Analyze pasted receipt text |
 
-All endpoints support full CRUD operations:
+### Analytics (Authenticated)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/analytics/stats/{userId}` | Dashboard statistics |
+| GET | `/api/analytics/forecast/{userId}` | AI forecast + anomaly alerts |
 
-### Users
-- `GET /api/users` - Get all users
-- `GET /api/users/{id}` - Get user by ID
-- `POST /api/users` - Create user
-- `PUT /api/users/{id}` - Update user
-- `DELETE /api/users/{id}` - Delete user
+### Export (Authenticated)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/export/pdf/{userId}` | Download PDF financial report |
 
-### Categories
-- `GET /api/categories` - Get all categories
-- `GET /api/categories/{id}` - Get category by ID
-- `POST /api/categories` - Create category
-- `PUT /api/categories/{id}` - Update category
-- `DELETE /api/categories/{id}` - Delete category
+### CRUD Endpoints
+Categories, Items, Goals, Users — all support full CRUD at `/api/{entity}`.
 
-### Items
-- `GET /api/items` - Get all items
-- `GET /api/items/{id}` - Get item by ID
-- `POST /api/items` - Create item
-- `PUT /api/items/{id}` - Update item
-- `DELETE /api/items/{id}` - Delete item
+## 🧠 AI Architecture
 
-### Transactions
-- `GET /api/transactions` - Get all transactions
-- `GET /api/transactions/{id}` - Get transaction by ID
-- `POST /api/transactions` - Create transaction
-- `PUT /api/transactions/{id}` - Update transaction
-- `DELETE /api/transactions/{id}` - Delete transaction
+### OCR Smart Scan Pipeline
+1. User uploads receipt photo → sent as base64 to Groq API
+2. **Llama 3.2 90B Vision** model analyzes the image
+3. AI extracts: amount, date, category, store name, currency
+4. NLP classifies items into spending categories automatically
+5. User confirms → transaction created with zero friction
 
-### Goals
-- `GET /api/goals` - Get all goals
-- `GET /api/goals/{id}` - Get goal by ID
-- `POST /api/goals` - Create goal
-- `PUT /api/goals/{id}` - Update goal
-- `DELETE /api/goals/{id}` - Delete goal
+### Budget Forecasting
+- Linear regression on daily spending data
+- Projects end-of-month balance
+- Calculates safe daily budget
+- AI-generated personalized recommendations via Llama 3.3
 
-## ✨ Features
+### Anomaly Detection
+- Computes per-category spending averages
+- Flags any transaction exceeding 20% above category average
+- Active security alerts for unusual patterns (hidden subscriptions, etc.)
 
-### Backend Features
-- ✅ Complete CRUD operations for all entities
-- ✅ MongoDB integration with Spring Data
-- ✅ Automatic database seeding
-- ✅ Entity relationships (DBRef)
-- ✅ Input validation
-- ✅ CORS configuration for Angular
-- ✅ Auto-incrementing user IDs
-- ✅ UUID generation for other entities
+## 🛠️ Technologies
 
-### Frontend Features
-- ✅ Modern, responsive dashboard
-- ✅ Real-time data fetching
-- ✅ Color-coded categories
-- ✅ Transaction type indicators (income/expense)
-- ✅ Delete operations with confirmation
-- ✅ Gradient background design
-- ✅ Card-based layouts
-- ✅ Hover effects and animations
+- **Spring Boot 3.2.1** + Spring Security + Spring WebFlux
+- **MongoDB** with Spring Data
+- **Angular 17** (Standalone Components)
+- **Groq API** (Llama 3.3 70B Versatile + Llama 3.2 90B Vision)
+- **JWT** (jjwt 0.12.3) + BCrypt
+- **iText 7** for PDF generation
+- **TypeScript 5.2** + RxJS
 
-## 🎨 UI Design
+## 👥 Team (INDP2E - SUP'COM)
 
-The Angular frontend features:
-- **Purple gradient background** for modern aesthetics
-- **Card-based layouts** for organized data display
-- **Color-coded elements** for visual clarity
-- **Responsive grid system** that adapts to screen sizes
-- **Interactive hover effects** for better UX
-- **Clean typography** using Segoe UI font family
+| Name | Role |
+|------|------|
+| Khalifa BOUNEB | Developer |
+| Badereddine GUESMI | Developer |
+| Wassim HAJJI | Developer |
+| Ahmed Dhia DRIDI | Developer |
+| Omar BAJAR | Developer |
+| Mohsen KHOUAJA | Developer |
 
-## 🔧 Configuration
-
-### Backend Configuration
-Edit `spring-boot-backend/src/main/resources/application.properties`:
-```properties
-spring.data.mongodb.uri=mongodb://localhost:27017/finance_tracker
-server.port=8080
-```
-
-### Frontend Configuration
-Edit API URLs in service files if backend runs on different port:
-```typescript
-private apiUrl = 'http://localhost:8080/api/...';
-```
-
-## 📝 Database Schema
-
-The implementation follows the DBML schema with:
-- **Users**: Integer ID (auto-increment), email uniqueness
-- **Categories**: UUID, color and icon properties
-- **Items**: UUID, linked to categories
-- **Transactions**: UUID, linked to users, categories, and items
-- **Goals**: UUID, monthly/yearly types, date ranges
-
-## 🛠️ Technologies Used
-
-### Backend
-- Spring Boot 3.2.1
-- Spring Data MongoDB
-- Lombok (reduces boilerplate)
-- Jakarta Validation
-- Maven
-
-### Frontend
-- Angular 17 (Standalone Components)
-- TypeScript 5.2
-- RxJS 7.8
-- Angular HttpClient
-- CSS3 with modern features
-
-## 📖 Additional Documentation
-
-- [Spring Boot Backend README](spring-boot-backend/README.md)
-- [Angular Frontend README](angular-frontend/README.md)
-
-## 🎯 Next Steps
-
-To extend the application:
-1. Add authentication and authorization
-2. Implement filtering and search
-3. Add charts and visualizations
-4. Create forms for adding/editing entities
-5. Add pagination for large datasets
-6. Implement real-time updates with WebSockets
+**Supervisor:** M. Zied CHOUKAIR  
+**Academic Year:** 2025 - 2026

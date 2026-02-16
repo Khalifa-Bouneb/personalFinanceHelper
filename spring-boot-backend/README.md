@@ -1,20 +1,31 @@
-# Finance Tracker - Spring Boot Backend
+# Smart Finance Manager - Spring Boot Backend
 
-A RESTful API backend for financial tracking built with Spring Boot and MongoDB.
+A RESTful API backend for intelligent & predictive personal finance management, built with Spring Boot, MongoDB, and Groq AI.
 
 ## Features
 
-- **User Management**: Create and manage user accounts
-- **Categories**: Organize transactions with customizable categories
-- **Items**: Track specific items within categories
-- **Transactions**: Record income (positive) and expenses (negative)
-- **Goals**: Set monthly or yearly spending goals
+- **JWT Authentication** — Secure login/register with BCrypt password hashing
+- **User Management** — Create and manage user accounts
+- **Categories** — Organize transactions with customizable categories (9 built-in)
+- **Items** — Track specific items within categories
+- **Transactions** — Record income (positive) and expenses (negative)
+- **Goals** — Set monthly or yearly spending goals
+- **OCR Smart Scan** — Upload receipt images for AI-powered data extraction (Groq Llama 4 Scout Vision)
+- **Text Receipt Scan** — Paste receipt text for AI analysis
+- **AI Forecasting** — End-of-month balance prediction using linear regression
+- **Anomaly Detection** — Alerts when expenses exceed 20% above category average
+- **AI Budget Recommendations** — Personalized advice from Llama 3.3 70B
+- **PDF Export** — Generate branded financial reports with iText 7
 
 ## Technology Stack
 
 - **Java 17**
 - **Spring Boot 3.2.1**
+- **Spring Security** (JWT + BCrypt)
 - **Spring Data MongoDB**
+- **Spring WebFlux** (WebClient for Groq API)
+- **Groq AI API** (Llama 4 Scout Vision + Llama 3.3 70B)
+- **iText 7** (PDF generation)
 - **Lombok**
 - **Maven**
 
@@ -23,6 +34,7 @@ A RESTful API backend for financial tracking built with Spring Boot and MongoDB.
 - Java 17 or higher
 - Maven 3.6+
 - MongoDB 4.4+ running on `localhost:27017`
+- Groq API Key (free at https://console.groq.com)
 
 ## Getting Started
 

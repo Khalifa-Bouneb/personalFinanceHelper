@@ -1,45 +1,178 @@
-<div class="dashboard">
-  <h1>Finance Tracker Dashboard</h1>
+<div class="app-shell">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h2>💰 Smart Finance</h2>
+      <p class="user-name">{{ currentUser?.name }}</p>
+      <p class="user-currency">{{ currentUser?.currency }}</p>
+    </div>
+    <ul class="nav-menu">
+      <li [class.active]="activeTab === 'overview'" (click)="activeTab = 'overview'">📊 Overview</li>
+      <li [class.active]="activeTab === 'transactions'" (click)="activeTab = 'transactions'">💳 Transactions</li>
+      <li [class.active]="activeTab === 'goals'" (click)="activeTab = 'goals'">🎯 Goals</li>
+      <li [class.active]="activeTab === 'scan'" (click)="activeTab = 'scan'">📸 Smart Scan</li>
+      <li [class.active]="activeTab === 'forecast'" (click)="activeTab = 'forecast'">🤖 AI Forecast</li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-export" (click)="exportPdf()">📄 Export PDF</button>
+      <button class="btn-logout" (click)="logout()">🚪 Logout</button>
+    </div>
+  </nav>
 
-  <div *ngIf="loading" class="loading">Loading data...</div>
+  <!-- Main Content -->
+  <main class="main-content">
+    <div *ngIf="loading" class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Loading your financial data...</p>
+    </div>
 
-  <div *ngIf="!loading">
-    <!-- Users Section -->
-    <section class="section">
-      <h2>👥 Users ({{ users.length }})</h2>
-      <div class="card-grid">
-        <div *ngFor="let user of users" class="card">
-          <h3>{{ user.name }}</h3>
-          <p><strong>Email:</strong> {{ user.email }}</p>
-          <p><strong>Currency:</strong> {{ user.currency || 'N/A' }}</p>
-          <p class="date">Joined: {{ user.createdAt | date:'short' }}</p>
-        </div>
-      </div>
-    </section>
+    <!-- ==================== OVERVIEW TAB ==================== -->
+    <div *ngIf="!loading && activeTab === 'overview'">
+      <h1>Dashboard Overview</h1>
 
-    <!-- Categories Section -->
-    <section class="section">
-      <h2>📁 Categories ({{ categories.length }})</h2>
-      <div class="card-grid">
-        <div *ngFor="let category of categories" class="card category-card">
-          <div class="category-header" [style.background-color]="category.color">
-            <span class="icon">{{ category.icon }}</span>
+      <!-- Summary Cards -->
+      <div class="stats-grid" *ngIf="stats">
+        <div class="stat-card income">
+          <div class="stat-icon">📈</div>
+          <div class="stat-info">
+            <span class="stat-label">Total Income</span>
+            <span class="stat-value">{{ stats.totalIncome | number:'1.2-2' }}</span>
           </div>
-          <h3>{{ category.name }}</h3>
-          <p class="date">Created: {{ category.createdAt | date:'short' }}</p>
+        </div>
+        <div class="stat-card expense">
+          <div class="stat-icon">📉</div>
+          <div class="stat-info">
+            <span class="stat-label">Total Expenses</span>
+            <span class="stat-value">{{ stats.totalExpenses | number:'1.2-2' }}</span>
+          </div>
+        </div>
+        <div class="stat-card balance" [class.negative-balance]="stats.balance < 0">
+          <div class="stat-icon">💰</div>
+          <div class="stat-info">
+            <span class="stat-label">Balance</span>
+            <span class="stat-value">{{ stats.balance | number:'1.2-2' }}</span>
+          </div>
+        </div>
+        <div class="stat-card monthly">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <span class="stat-label">Monthly Expenses</span>
+            <span class="stat-value">{{ stats.monthlyExpenses | number:'1.2-2' }}</span>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- Transactions Section -->
-    <section class="section">
-      <h2>💰 Recent Transactions ({{ transactions.length }})</h2>
+      <!-- Category Breakdown -->
+      <section class="section" *ngIf="stats && stats.categoryBreakdown.length > 0">
+        <h2>📁 Expense Breakdown</h2>
+        <div class="category-bars">
+          <div *ngFor="let cat of stats.categoryBreakdown" class="category-bar-item">
+            <div class="category-bar-header">
+              <span class="cat-name">
+                <span class="cat-dot" [style.background-color]="cat.color"></span>
+                {{ cat.categoryName }}
+              </span>
+              <span class="cat-amount">{{ cat.total | number:'1.2-2' }} ({{ cat.percentage | number:'1.1-1' }}%)</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" [style.width]="getBarWidth(cat.percentage)"
+                   [style.background-color]="cat.color"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Monthly Trends -->
+      <section class="section" *ngIf="stats && stats.monthlyTrends.length > 0">
+        <h2>📈 Monthly Trends</h2>
+        <div class="trends-table">
+          <table>
+            <thead>
+              <tr><th>Month</th><th>Income</th><th>Expenses</th><th>Net</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let trend of stats.monthlyTrends">
+                <td>{{ trend.month }}</td>
+                <td class="positive">+{{ trend.income | number:'1.2-2' }}</td>
+                <td class="negative">-{{ trend.expenses | number:'1.2-2' }}</td>
+                <td [class.positive]="trend.income - trend.expenses >= 0"
+                    [class.negative]="trend.income - trend.expenses < 0">
+                  {{ (trend.income - trend.expenses) | number:'1.2-2' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Goal Progress -->
+      <section class="section" *ngIf="stats && stats.goalProgress.length > 0">
+        <h2>🎯 Goal Progress</h2>
+        <div class="goal-progress-list">
+          <div *ngFor="let gp of stats.goalProgress" class="goal-progress-item"
+               [class.exceeded]="gp.exceeded">
+            <div class="goal-progress-header">
+              <span>{{ gp.categoryName }} ({{ gp.type }})</span>
+              <span>{{ gp.currentSpent | number:'1.2-2' }} / {{ gp.maxAmount | number:'1.2-2' }}</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill"
+                   [style.width]="getBarWidth(gp.percentage)"
+                   [style.background-color]="gp.exceeded ? '#e74c3c' : '#27ae60'"></div>
+            </div>
+            <span class="goal-pct">{{ gp.percentage | number:'1.1-1' }}%</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== TRANSACTIONS TAB ==================== -->
+    <div *ngIf="!loading && activeTab === 'transactions'">
+      <div class="tab-header">
+        <h1>💳 Transactions</h1>
+        <button class="btn-add" (click)="showAddTransaction = !showAddTransaction">
+          {{ showAddTransaction ? '✕ Cancel' : '+ Add Transaction' }}
+        </button>
+      </div>
+
+      <!-- Add Transaction Form -->
+      <div *ngIf="showAddTransaction" class="form-card">
+        <h3>New Transaction</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Amount</label>
+            <input type="number" [(ngModel)]="newTransaction.amount" placeholder="0.00" step="0.01">
+          </div>
+          <div class="form-group">
+            <label>Type</label>
+            <select [(ngModel)]="newTransaction.sign">
+              <option value="NEGATIVE">Expense (−)</option>
+              <option value="POSITIVE">Income (+)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select [(ngModel)]="newTransaction.categoryId">
+              <option value="">Select category...</option>
+              <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="datetime-local" [(ngModel)]="newTransaction.transactionDate">
+          </div>
+        </div>
+        <button class="btn-primary" (click)="addTransaction()">Save Transaction</button>
+      </div>
+
+      <!-- Transaction List -->
       <div class="table-container">
         <table>
           <thead>
             <tr>
               <th>Date</th>
-              <th>User</th>
               <th>Category</th>
               <th>Amount</th>
               <th>Type</th>
@@ -47,48 +180,243 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let transaction of transactions">
-              <td>{{ transaction.transactionDate | date:'short' }}</td>
-              <td>{{ transaction.user?.name || 'Unknown' }}</td>
+            <tr *ngFor="let t of transactions">
+              <td>{{ t.transactionDate | date:'dd/MM/yyyy HH:mm' }}</td>
               <td>
-                <span class="badge" [style.background-color]="transaction.category?.color">
-                  {{ transaction.category?.name || 'N/A' }}
+                <span class="badge" [style.background-color]="t.category?.color || getCategoryColor(t.categoryId)">
+                  {{ t.category?.name || getCategoryName(t.categoryId) }}
                 </span>
               </td>
-              <td class="amount" [class.positive]="transaction.sign === 'POSITIVE'" 
-                  [class.negative]="transaction.sign === 'NEGATIVE'">
-                {{ transaction.sign === 'POSITIVE' ? '+' : '-' }}${{ transaction.amount }}
+              <td class="amount" [class.positive]="t.sign === 'POSITIVE'" [class.negative]="t.sign === 'NEGATIVE'">
+                {{ t.sign === 'POSITIVE' ? '+' : '-' }}{{ t.amount | number:'1.2-2' }}
               </td>
               <td>
-                <span class="badge" [class.positive]="transaction.sign === 'POSITIVE'" 
-                      [class.negative]="transaction.sign === 'NEGATIVE'">
-                  {{ transaction.sign }}
+                <span class="type-badge" [class.positive]="t.sign === 'POSITIVE'" [class.negative]="t.sign === 'NEGATIVE'">
+                  {{ t.sign === 'POSITIVE' ? 'Income' : 'Expense' }}
                 </span>
               </td>
               <td>
-                <button class="btn-delete" (click)="deleteTransaction(transaction.id)">Delete</button>
+                <button class="btn-delete-sm" (click)="deleteTransaction(t.id)">🗑</button>
               </td>
             </tr>
           </tbody>
         </table>
-      </div>
-    </section>
-
-    <!-- Goals Section -->
-    <section class="section">
-      <h2>🎯 Financial Goals ({{ goals.length }})</h2>
-      <div class="card-grid">
-        <div *ngFor="let goal of goals" class="card goal-card">
-          <div class="goal-header">
-            <h3>{{ goal.category?.name || 'General' }} Goal</h3>
-            <span class="badge">{{ goal.type }}</span>
-          </div>
-          <p><strong>User:</strong> {{ goal.user?.name }}</p>
-          <p><strong>Max Amount:</strong> ${{ goal.maxAmount }}</p>
-          <p><strong>Period:</strong> {{ goal.startDate | date:'short' }} - {{ goal.endDate | date:'short' }}</p>
-          <button class="btn-delete" (click)="deleteGoal(goal.id)">Delete</button>
+        <div *ngIf="transactions.length === 0" class="empty-state">
+          <p>No transactions yet. Add your first transaction!</p>
         </div>
       </div>
-    </section>
-  </div>
+    </div>
+
+    <!-- ==================== GOALS TAB ==================== -->
+    <div *ngIf="!loading && activeTab === 'goals'">
+      <div class="tab-header">
+        <h1>🎯 Financial Goals</h1>
+        <button class="btn-add" (click)="showAddGoal = !showAddGoal">
+          {{ showAddGoal ? '✕ Cancel' : '+ Add Goal' }}
+        </button>
+      </div>
+
+      <!-- Add Goal Form -->
+      <div *ngIf="showAddGoal" class="form-card">
+        <h3>New Goal</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select [(ngModel)]="newGoal.categoryId">
+              <option value="">Select category...</option>
+              <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Max Amount</label>
+            <input type="number" [(ngModel)]="newGoal.maxAmount" placeholder="500.00" step="0.01">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Type</label>
+            <select [(ngModel)]="newGoal.type">
+              <option value="MONTHLY">Monthly</option>
+              <option value="YEARLY">Yearly</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Start Date</label>
+            <input type="date" [(ngModel)]="newGoal.startDate">
+          </div>
+          <div class="form-group">
+            <label>End Date</label>
+            <input type="date" [(ngModel)]="newGoal.endDate">
+          </div>
+        </div>
+        <button class="btn-primary" (click)="addGoal()">Save Goal</button>
+      </div>
+
+      <!-- Goals List -->
+      <div class="goals-grid">
+        <div *ngFor="let goal of goals" class="goal-card">
+          <div class="goal-card-header">
+            <h3>{{ goal.category?.name || getCategoryName(goal.categoryId) }}</h3>
+            <span class="goal-type-badge">{{ goal.type }}</span>
+          </div>
+          <p><strong>Max:</strong> {{ goal.maxAmount | number:'1.2-2' }}</p>
+          <p><strong>Period:</strong> {{ goal.startDate | date:'dd/MM/yyyy' }} → {{ goal.endDate | date:'dd/MM/yyyy' }}</p>
+          <button class="btn-delete-sm" (click)="deleteGoal(goal.id)">🗑 Delete</button>
+        </div>
+        <div *ngIf="goals.length === 0" class="empty-state">
+          <p>No goals set yet. Create a spending goal!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SMART SCAN (OCR) TAB ==================== -->
+    <div *ngIf="!loading && activeTab === 'scan'">
+      <h1>📸 Smart Scan (AI Receipt Scanner)</h1>
+      <p class="tab-desc">Upload a receipt photo or paste text — our AI will extract the amount, date, and category automatically.</p>
+
+      <div class="scan-grid">
+        <!-- Image Upload -->
+        <div class="scan-card">
+          <h3>📷 Scan Receipt Image</h3>
+          <div class="file-upload-area" (click)="fileInput.click()">
+            <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden>
+            <div *ngIf="!previewUrl" class="upload-placeholder">
+              <span class="upload-icon">📁</span>
+              <p>Click to upload receipt image</p>
+              <small>JPEG, PNG, WebP</small>
+            </div>
+            <img *ngIf="previewUrl" [src]="previewUrl" class="receipt-preview" alt="Receipt preview">
+          </div>
+          <button class="btn-primary" (click)="scanReceipt()" [disabled]="!selectedFile || ocrLoading">
+            {{ ocrLoading ? '🔄 Analyzing...' : '🔍 Scan Image' }}
+          </button>
+        </div>
+
+        <!-- Text Input -->
+        <div class="scan-card">
+          <h3>📝 Paste Receipt Text</h3>
+          <textarea [(ngModel)]="receiptText" rows="8"
+                    placeholder="Paste your receipt text here...&#10;&#10;Example:&#10;Carrefour Market&#10;Date: 15/02/2026&#10;Milk 3.500 TND&#10;Bread 1.200 TND&#10;Total: 4.700 TND"></textarea>
+          <button class="btn-primary" (click)="scanText()" [disabled]="!receiptText.trim() || ocrLoading">
+            {{ ocrLoading ? '🔄 Analyzing...' : '🔍 Analyze Text' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- OCR Result -->
+      <div *ngIf="ocrResult" class="ocr-result-card">
+        <h3>✅ AI Extraction Result</h3>
+        <div class="ocr-fields">
+          <div class="ocr-field">
+            <label>Amount</label>
+            <span class="ocr-value highlight">{{ ocrResult.amount | number:'1.2-2' }} {{ ocrResult.currency }}</span>
+          </div>
+          <div class="ocr-field">
+            <label>Category</label>
+            <span class="ocr-value">{{ ocrResult.category }}</span>
+          </div>
+          <div class="ocr-field">
+            <label>Item</label>
+            <span class="ocr-value">{{ ocrResult.itemName }}</span>
+          </div>
+          <div class="ocr-field">
+            <label>Date</label>
+            <span class="ocr-value">{{ ocrResult.date }}</span>
+          </div>
+          <div class="ocr-field">
+            <label>Confidence</label>
+            <span class="ocr-value">{{ (ocrResult.confidence * 100) | number:'1.0-0' }}%</span>
+          </div>
+          <div class="ocr-field full-width">
+            <label>Description</label>
+            <span class="ocr-value">{{ ocrResult.description }}</span>
+          </div>
+        </div>
+        <button class="btn-primary" (click)="createTransactionFromOcr()">
+          ✅ Create Transaction from Scan
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== FORECAST TAB ==================== -->
+    <div *ngIf="!loading && activeTab === 'forecast'">
+      <h1>🤖 AI Financial Forecast</h1>
+
+      <div *ngIf="forecast" class="forecast-content">
+        <!-- Forecast Summary Cards -->
+        <div class="stats-grid">
+          <div class="stat-card" [class.negative-balance]="forecast.predictedEndOfMonthBalance < 0">
+            <div class="stat-icon">🔮</div>
+            <div class="stat-info">
+              <span class="stat-label">Predicted End-of-Month</span>
+              <span class="stat-value">{{ forecast.predictedEndOfMonthBalance | number:'1.2-2' }}</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-info">
+              <span class="stat-label">Predicted Monthly Expenses</span>
+              <span class="stat-value">{{ forecast.predictedMonthlyExpenses | number:'1.2-2' }}</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💵</div>
+            <div class="stat-info">
+              <span class="stat-label">Safe Daily Budget</span>
+              <span class="stat-value">{{ forecast.safeDailyBudget | number:'1.2-2' }}</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div class="stat-info">
+              <span class="stat-label">Days Remaining</span>
+              <span class="stat-value">{{ forecast.daysRemaining }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Recommendation -->
+        <section class="section ai-recommendation">
+          <h2>🧠 AI Budget Recommendation</h2>
+          <div class="recommendation-text">{{ forecast.recommendation }}</div>
+        </section>
+
+        <!-- Anomaly Alerts -->
+        <section class="section" *ngIf="forecast.anomalies && forecast.anomalies.length > 0">
+          <h2>⚠️ Anomaly Alerts</h2>
+          <div class="anomaly-list">
+            <div *ngFor="let anomaly of forecast.anomalies" class="anomaly-card">
+              <div class="anomaly-icon">⚠️</div>
+              <div class="anomaly-info">
+                <p class="anomaly-msg">{{ anomaly.message }}</p>
+                <small>{{ anomaly.date }} · Deviation: +{{ anomaly.deviationPercentage | number:'1.0-0' }}%</small>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Daily Predictions Table -->
+        <section class="section" *ngIf="forecast.predictions && forecast.predictions.length > 0">
+          <h2>📈 Daily Balance Projection</h2>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Date</th><th>Predicted Balance</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let pred of forecast.predictions"
+                    [class.negative-row]="pred.predictedBalance < 0">
+                  <td>{{ pred.date }}</td>
+                  <td [class.positive]="pred.predictedBalance >= 0"
+                      [class.negative]="pred.predictedBalance < 0">
+                    {{ pred.predictedBalance | number:'1.2-2' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
 </div>

@@ -1,46 +1,69 @@
-# Node
-node_modules/
-dist/
-.env
-*.log
-# Angular
-.angular/cache/
-# Editor
-.vscode/
-.DS_Store
-# OS
-Thumbs.db
-# Build
-/build/
-# Misc
-*.swp
-*.swo
+# ========================
+# Smart Finance Manager
+# ========================
 
-# Java
-*.class
-*.jar
-*.war
-*.ear
-*.iml
-*.log
-*.tmp
+# -------- OS / Editor --------
+.DS_Store
+Thumbs.db
+Desktop.ini
 *.swp
 *.swo
 *.bak
 *.orig
 *.rej
-# Maven
-/target/
-# IntelliJ
+*.tmp
+nul
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# -------- Python --------
+.venv/
+__pycache__/
+*.pyc
+
+# -------- Angular Frontend --------
+angular-frontend/node_modules/
+angular-frontend/dist/
+angular-frontend/.angular/
+angular-frontend/.sass-cache/
+angular-frontend/*.log
+
+# -------- Spring Boot Backend --------
+spring-boot-backend/target/
+spring-boot-backend/.mvn/
+spring-boot-backend/*.log
+
+# Java class files
+*.class
+
+# Maven wrapper
+!.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ IDEA
 .idea/
 *.iws
 *.ipr
 *.iml
+out/
+
 # Eclipse
 .project
 .classpath
-.c9/
 .settings/
-# Spring Boot
-spring-boot-backend/.env
-spring-boot-backend/.mvn/
+.c9/
+bin/
+
+# -------- Environment / Secrets --------
+.env
+*.env.local
+*.env.production
+
+# -------- Logs --------
+*.log
+logs/
+npm-debug.log*
+
+# -------- Package locks (optional — remove line below to track them) --------
+angular-frontend/package-lock.json

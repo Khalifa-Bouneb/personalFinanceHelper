@@ -1,4 +1,49 @@
-# See ../.gitignore for global ignores
+# ========================
+# Angular Frontend
+# ========================
+
+# -------- Dependencies --------
 /node_modules/
+
+# -------- Build output --------
 /dist/
+/tmp/
+/out-tsc/
+
+# -------- Angular cache --------
+/.angular/
 /.angular/cache/
+/.sass-cache/
+
+# -------- IDE - VS Code --------
+.vscode/
+
+# -------- IDE - IntelliJ / WebStorm --------
+.idea/
+*.iml
+
+# -------- OS files --------
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# -------- Testing --------
+/coverage/
+
+# -------- Logs --------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# -------- Environment / Secrets --------
+.env
+*.env.local
+*.env.production
+
+# -------- Profiling --------
+chrome-profiler-events*.json
+
+# -------- Misc --------
+/.cache/
+.editorconfig

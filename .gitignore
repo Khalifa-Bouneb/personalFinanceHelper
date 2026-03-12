@@ -23,12 +23,17 @@ nul
 __pycache__/
 *.pyc
 
+# -------- Node (root level) --------
+/node_modules/
+/package-lock.json
+
 # -------- Angular Frontend --------
 angular-frontend/node_modules/
 angular-frontend/dist/
 angular-frontend/.angular/
 angular-frontend/.sass-cache/
 angular-frontend/*.log
+angular-frontend/package-lock.json
 
 # -------- Spring Boot Backend --------
 spring-boot-backend/target/
@@ -64,6 +69,3 @@ bin/
 *.log
 logs/
 npm-debug.log*
-
-# -------- Package locks (optional — remove line below to track them) --------
-angular-frontend/package-lock.json

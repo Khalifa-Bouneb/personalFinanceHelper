@@ -1,171 +1,348 @@
-# Smart Finance Manager 💰
+# Smart Finance Manager
 
-**Application Web de Gestion Financière Intelligente & Prédictive**
+**Intelligent & Predictive Personal Finance Web Application**
 
-A full-stack personal finance application combining **data sovereignty**, **fluid UX**, and **AI-powered intelligence** for budget management — built for students and young professionals.
+A full-stack finance management app combining **data sovereignty**, **fluid UX**, and **AI-powered intelligence** — built for students and young professionals.
 
-## 🎯 Project Overview
+> **INDP2E — SUP'COM** (Ecole Superieure des Communications de Tunis)  
+> Academic Year 2025–2026 | Supervisor: M. Zied CHOUKAIR
 
-This project was built as part of the INDP2E program at **SUP'COM** (École Supérieure des Communications de Tunis).
+---
 
-### Key Innovation
-Unlike traditional finance apps, Smart Finance Manager offers:
-- **Privacy-First** architecture with MongoDB (no bank connections required)
-- **AI-Powered OCR** receipt scanning using Groq/Llama
-- **Predictive Analytics** for budget forecasting
-- **Anomaly Detection** for unusual spending alerts
+## Table of Contents
 
-## 🏗️ Architecture
+1. [Architecture](#architecture)
+2. [Prerequisites](#prerequisites)
+3. [Quick Start (How to Test)](#quick-start-how-to-test)
+4. [Demo Credentials](#demo-credentials)
+5. [Features Overview](#features-overview)
+6. [API Reference](#api-reference)
+7. [Project Structure](#project-structure)
+8. [Team](#team)
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Angular 17 (Standalone Components) |
-| Backend | Spring Boot 3.2.1 + Java 17 |
-| Database | MongoDB |
-| AI/OCR | Groq API (Llama 3.3 70B + Llama 3.2 90B Vision) |
-| Auth | JWT + BCrypt |
-| PDF Export | iText 7 |
+---
 
-## ✨ Features
+## Architecture
 
-### 🆓 Standard Pack (Free)
-- ✅ **CRUD Transactions** — Quick income/expense entry (Cash & Card)
-- ✅ **Dynamic Categorization** — Custom tags (e.g., "SupCom Project", "Outings")
-- ✅ **Monthly Visualization** — Pie charts and histograms
-- ✅ **Multi-Currency** — TND/EUR/USD support
-- ✅ **JWT Security** — Robust authentication with BCrypt password hashing
+| Layer        | Technology                                  |
+|--------------|---------------------------------------------|
+| Frontend     | Angular 17 (Standalone Components)          |
+| Backend      | Spring Boot 3.2.1 + Java 17                |
+| Database     | MongoDB 4.4+                                |
+| AI / OCR     | Groq API (Llama 3.3 70B + Llama 4 Scout Vision) |
+| Auth         | JWT (jjwt 0.12.3) + BCrypt                 |
+| PDF Export   | iText 7                                     |
 
-### 🤖 Premium Pack (AI-Powered)
-- ✅ **Smart Scan (OCR)** — Photo of receipt → automatic extraction (Date, Amount, Category) via Groq Llama Vision
-- ✅ **Text Receipt Scan** — Paste receipt text for AI extraction
-- ✅ **AI Forecasting** — End-of-month balance prediction using linear regression
-- ✅ **Anomaly Detection** — Immediate alert if an expense exceeds category average by 20%+
-- ✅ **AI Budget Recommendations** — Personalized advice from Llama 3.3
-- ✅ **Certified PDF Reports** — Clean PDF export for administrative files
-
-## 🚀 Getting Started
-
-### Prerequisites
-- **Java 17+** and **Maven 3.6+**
-- **MongoDB 4.4+** running on `localhost:27017`
-- **Node.js 18+** and **npm**
-- **Groq API Key** (free at https://console.groq.com)
-
-### Step 1: Configure Groq API Key
-```bash
-# Set environment variable
-export GROQ_API_KEY=gsk_your_key_here
-
-# Or edit spring-boot-backend/src/main/resources/application.properties
-groq.api.key=gsk_your_key_here
+```
+┌────────────────┐       HTTP/JSON       ┌──────────────────────┐       ┌──────────┐
+│  Angular 17    │ ◄──────────────────►  │  Spring Boot 3.2     │ ◄──► │ MongoDB  │
+│  :4200         │   JWT Auth Header     │  :8080               │      │ :27017   │
+└────────────────┘                       │  ┌──────────────┐    │      └──────────┘
+                                         │  │ Groq AI API  │    │
+                                         │  │ (OCR/NLP)    │    │
+                                         │  └──────────────┘    │
+                                         └──────────────────────┘
 ```
 
-### Step 2: Start MongoDB
+---
+
+## Prerequisites
+
+Make sure the following are installed on your machine **before testing**:
+
+| Tool          | Version    | Download Link                                    |
+|---------------|------------|--------------------------------------------------|
+| **Java JDK**  | 17+        | https://adoptium.net/                            |
+| **Maven**     | 3.6+       | https://maven.apache.org/download.cgi            |
+| **MongoDB**   | 4.4+       | https://www.mongodb.com/try/download/community   |
+| **Node.js**   | 18+        | https://nodejs.org/                              |
+| **npm**       | 9+         | (comes with Node.js)                             |
+
+> **Groq API Key** (free): Get one at https://console.groq.com — already configured in the project for demo purposes.
+
+---
+
+## Quick Start (How to Test)
+
+### Step 1 — Start MongoDB
+
+Make sure MongoDB is running on `localhost:27017`.
+
 ```bash
-# Windows
+# Windows (if installed as service, it runs automatically)
+# Otherwise:
 mongod
 
-# Linux/Mac
+# Linux / macOS
 sudo systemctl start mongod
 ```
 
-### Step 3: Run Backend
+Verify it's running:
+
+```bash
+mongosh --eval "db.runCommand({ ping: 1 })"
+# Expected output: { ok: 1 }
+```
+
+### Step 2 — Start the Backend (Spring Boot)
+
 ```bash
 cd spring-boot-backend
-mvn clean install
+mvn clean install -DskipTests
 mvn spring-boot:run
 ```
-Backend starts at `http://localhost:8080` with auto-seeded demo data.
 
-### Step 4: Run Frontend
+Wait until you see:
+
+```
+Started Application in X seconds
+Database seeding completed successfully!
+```
+
+The backend is now running at **http://localhost:8080**.  
+The database is **auto-seeded** with demo data (2 users, 9 categories, 5 items, 12 transactions, 3 goals).
+
+### Step 3 — Start the Frontend (Angular)
+
+Open a **new terminal** and run:
+
 ```bash
 cd angular-frontend
 npm install
-npm start
+npx ng serve
 ```
-Frontend at `http://localhost:4200`
 
-### Demo Credentials
-- **Email:** `john.doe@example.com`
-- **Password:** `password123`
+Wait until you see:
 
-## 📊 API Endpoints
+```
+** Angular Live Development Server is listening on localhost:4200 **
+```
+
+### Step 4 — Open the App
+
+Open your browser and go to: **http://localhost:4200**
+
+---
+
+## Demo Credentials
+
+The database is seeded with two demo users on every startup:
+
+| User       | Email                     | Password      | Currency |
+|------------|---------------------------|---------------|----------|
+| John Doe   | `john.doe@example.com`    | `password123` | TND      |
+| Jane Smith | `jane.smith@example.com`  | `password123` | EUR      |
+
+---
+
+## Features Overview
+
+### Standard Features
+
+| Feature                    | Description                                                                 |
+|----------------------------|-----------------------------------------------------------------------------|
+| **User Authentication**    | Register / Login with JWT tokens and BCrypt password hashing               |
+| **CRUD Transactions**      | Add, view, edit, and delete income and expense entries                      |
+| **Dynamic Categories**     | 9 built-in categories (Groceries, Transport, Entertainment, etc.)          |
+| **Item Tracking**          | Track specific items within categories with costs                          |
+| **Spending Goals**         | Set monthly or yearly budget limits per category                           |
+| **Dashboard Overview**     | Stats cards showing total income, expenses, balance, and transaction count  |
+| **Category Breakdown**     | Pie-chart-style percentage breakdown of expenses by category               |
+| **Monthly Trends**         | 6-month income vs expenses trend visualization                             |
+| **Goal Progress**          | Visual tracking of spending against budget goals with exceeded alerts      |
+| **Multi-Currency**         | Support for TND, EUR, and USD                                              |
+
+### AI-Powered Features
+
+| Feature                     | Description                                                                 |
+|-----------------------------|-----------------------------------------------------------------------------|
+| **Smart Scan (OCR)**        | Upload a receipt photo → AI extracts date, amount, category, and items     |
+| **Text Receipt Scan**       | Paste raw receipt text → AI parses and structures it                       |
+| **AI Forecasting**          | Linear regression predicts end-of-month balance and safe daily budget      |
+| **Anomaly Detection**       | Flags expenses that exceed 20%+ above their category average               |
+| **AI Recommendations**      | Personalized budget advice generated by Llama 3.3                          |
+| **PDF Export**              | Download a branded, certified PDF financial report                         |
+
+---
+
+## API Reference
+
+All endpoints are prefixed with `/api`. Authenticated endpoints require the header:  
+`Authorization: Bearer <jwt_token>`
 
 ### Authentication (Public)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login & get JWT token |
 
-### Transactions (Authenticated)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/transactions` | Get all transactions |
-| GET | `/api/transactions/user/{userId}` | Get user's transactions |
-| POST | `/api/transactions` | Create transaction |
-| PUT | `/api/transactions/{id}` | Update transaction |
-| DELETE | `/api/transactions/{id}` | Delete transaction |
+| Method | Endpoint             | Body                                       | Description           |
+|--------|----------------------|--------------------------------------------|-----------------------|
+| POST   | `/api/auth/register` | `{ name, email, password, currency }`      | Register a new user   |
+| POST   | `/api/auth/login`    | `{ email, password }`                      | Login, returns JWT    |
 
-### AI / OCR (Authenticated)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/ocr/scan` | Upload receipt image for AI OCR |
-| POST | `/api/ocr/scan-text` | Analyze pasted receipt text |
+### Transactions
 
-### Analytics (Authenticated)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/analytics/stats/{userId}` | Dashboard statistics |
-| GET | `/api/analytics/forecast/{userId}` | AI forecast + anomaly alerts |
+| Method | Endpoint                           | Description                    |
+|--------|------------------------------------|-------------------------------|
+| GET    | `/api/transactions`                | List all transactions          |
+| GET    | `/api/transactions/user/{userId}`  | List user's transactions       |
+| POST   | `/api/transactions`                | Create a transaction           |
+| PUT    | `/api/transactions/{id}`           | Update a transaction           |
+| DELETE | `/api/transactions/{id}`           | Delete a transaction           |
 
-### Export (Authenticated)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/export/pdf/{userId}` | Download PDF financial report |
+### Categories
 
-### CRUD Endpoints
-Categories, Items, Goals, Users — all support full CRUD at `/api/{entity}`.
+| Method | Endpoint               | Description              |
+|--------|------------------------|--------------------------|
+| GET    | `/api/categories`      | List all categories       |
+| POST   | `/api/categories`      | Create a category         |
+| DELETE | `/api/categories/{id}` | Delete a category         |
 
-## 🧠 AI Architecture
+### Items
 
-### OCR Smart Scan Pipeline
-1. User uploads receipt photo → sent as base64 to Groq API
-2. **Llama 3.2 90B Vision** model analyzes the image
-3. AI extracts: amount, date, category, store name, currency
-4. NLP classifies items into spending categories automatically
-5. User confirms → transaction created with zero friction
+| Method | Endpoint                          | Description                |
+|--------|-----------------------------------|----------------------------|
+| GET    | `/api/items`                      | List all items              |
+| GET    | `/api/items/category/{categoryId}`| List items by category     |
+| POST   | `/api/items`                      | Create an item              |
+| DELETE | `/api/items/{id}`                 | Delete an item              |
 
-### Budget Forecasting
-- Linear regression on daily spending data
-- Projects end-of-month balance
-- Calculates safe daily budget
-- AI-generated personalized recommendations via Llama 3.3
+### Goals
 
-### Anomaly Detection
-- Computes per-category spending averages
-- Flags any transaction exceeding 20% above category average
-- Active security alerts for unusual patterns (hidden subscriptions, etc.)
+| Method | Endpoint                     | Description             |
+|--------|------------------------------|-------------------------|
+| GET    | `/api/goals`                 | List all goals           |
+| GET    | `/api/goals/user/{userId}`   | List user's goals        |
+| POST   | `/api/goals`                 | Create a goal            |
+| DELETE | `/api/goals/{id}`            | Delete a goal            |
 
-## 🛠️ Technologies
+### Users
 
-- **Spring Boot 3.2.1** + Spring Security + Spring WebFlux
-- **MongoDB** with Spring Data
-- **Angular 17** (Standalone Components)
-- **Groq API** (Llama 3.3 70B Versatile + Llama 3.2 90B Vision)
-- **JWT** (jjwt 0.12.3) + BCrypt
-- **iText 7** for PDF generation
-- **TypeScript 5.2** + RxJS
+| Method | Endpoint            | Description          |
+|--------|---------------------|----------------------|
+| GET    | `/api/users`        | List all users        |
+| GET    | `/api/users/{id}`   | Get user by ID        |
+| PUT    | `/api/users/{id}`   | Update user           |
+| DELETE | `/api/users/{id}`   | Delete user           |
 
-## 👥 Team (INDP2E - SUP'COM)
+### AI / OCR
 
-| Name | Role |
-|------|------|
-| Khalifa BOUNEB | Developer |
+| Method | Endpoint             | Body / Params             | Description                            |
+|--------|----------------------|---------------------------|----------------------------------------|
+| POST   | `/api/ocr/scan`      | `file` (multipart image)  | Upload receipt image for AI OCR        |
+| POST   | `/api/ocr/scan-text` | `{ "text": "..." }`      | Paste receipt text for AI extraction   |
+
+### Analytics
+
+| Method | Endpoint                        | Description                                         |
+|--------|---------------------------------|-----------------------------------------------------|
+| GET    | `/api/analytics/stats/{userId}` | Dashboard stats (totals, breakdown, trends, goals)  |
+| GET    | `/api/analytics/forecast/{userId}` | AI forecast, anomaly alerts, daily predictions   |
+
+### Export
+
+| Method | Endpoint                   | Description                          |
+|--------|----------------------------|--------------------------------------|
+| GET    | `/api/export/pdf/{userId}` | Download PDF financial report        |
+
+---
+
+## Project Structure
+
+```
+personalFinanceHelper/
+├── .gitignore
+├── README.md                          # This file
+├── schema.dbml                        # Database schema documentation
+├── docs/
+│   └── ZC_P.pdf                       # Project specification document
+│
+├── spring-boot-backend/               # Java Spring Boot REST API
+│   ├── pom.xml                        # Maven dependencies
+│   └── src/main/java/com/finance/
+│       ├── Application.java           # Entry point
+│       ├── config/
+│       │   ├── SecurityConfig.java    # JWT + CORS security config
+│       │   └── DatabaseSeeder.java    # Auto-seeds demo data on startup
+│       ├── controller/                # REST API endpoints
+│       │   ├── AuthController.java
+│       │   ├── TransactionController.java
+│       │   ├── CategoryController.java
+│       │   ├── ItemController.java
+│       │   ├── GoalController.java
+│       │   ├── UserController.java
+│       │   ├── AnalyticsController.java
+│       │   ├── OcrController.java
+│       │   └── ExportController.java
+│       ├── dto/                       # Data Transfer Objects
+│       │   ├── LoginRequest.java
+│       │   ├── RegisterRequest.java
+│       │   ├── AuthResponse.java
+│       │   ├── DashboardStats.java
+│       │   ├── ForecastResult.java
+│       │   └── OcrResult.java
+│       ├── enums/
+│       │   ├── TransactionSign.java   # POSITIVE / NEGATIVE
+│       │   └── GoalType.java          # MONTHLY / YEARLY
+│       ├── model/                     # MongoDB document models
+│       │   ├── User.java
+│       │   ├── Transaction.java
+│       │   ├── Category.java
+│       │   ├── Item.java
+│       │   └── Goal.java
+│       ├── repository/                # Spring Data MongoDB repositories
+│       ├── security/
+│       │   ├── JwtUtil.java           # JWT token generation/validation
+│       │   └── JwtAuthenticationFilter.java
+│       └── service/                   # Business logic
+│           ├── UserService.java
+│           ├── TransactionService.java
+│           ├── CategoryService.java
+│           ├── ItemService.java
+│           ├── GoalService.java
+│           ├── AnalyticsService.java   # Dashboard stats + forecasting
+│           ├── GroqAiService.java      # Groq API integration (OCR + NLP)
+│           └── PdfExportService.java   # iText PDF generation
+│
+└── angular-frontend/                  # Angular 17 SPA
+    ├── package.json
+    ├── angular.json
+    └── src/
+        ├── index.html
+        ├── main.ts
+        ├── styles.css
+        └── app/
+            ├── app.component.ts       # Root component with routing
+            ├── app.config.ts          # App configuration + providers
+            ├── components/
+            │   ├── login/             # Login / Register page
+            │   └── dashboard/         # Main dashboard (all tabs)
+            ├── interceptors/
+            │   └── auth.interceptor.ts # Adds JWT to HTTP requests
+            ├── models/
+            │   └── models.ts          # TypeScript interfaces
+            └── services/              # HTTP service layer
+                ├── auth.service.ts
+                ├── transaction.service.ts
+                ├── category.service.ts
+                ├── item.service.ts
+                ├── goal.service.ts
+                ├── analytics.service.ts
+                ├── ocr.service.ts
+                ├── export.service.ts
+                └── user.service.ts
+```
+
+---
+
+## Team
+
+| Name               | Role      |
+|--------------------|-----------|
+| Khalifa BOUNEB     | Developer |
 | Badereddine GUESMI | Developer |
-| Wassim HAJJI | Developer |
-| Ahmed Dhia DRIDI | Developer |
-| Omar BAJAR | Developer |
-| Mohsen KHOUAJA | Developer |
+| Wassim HAJJI       | Developer |
+| Ahmed Dhia DRIDI   | Developer |
+| Omar BAJAR         | Developer |
+| Mohsen KHOUAJA     | Developer |
 
 **Supervisor:** M. Zied CHOUKAIR  
-**Academic Year:** 2025 - 2026
+**Institution:** SUP'COM — INDP2E  
+**Academic Year:** 2025–2026

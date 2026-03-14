@@ -6,10 +6,12 @@ spring.data.mongodb.auto-index-creation=true
 server.port=8080
 
 # JWT Configuration
+# Set the JWT_SECRET environment variable or replace the placeholder below
 jwt.secret=${JWT_SECRET:YourSuperSecretKeyForJWTTokenGenerationMustBeAtLeast256BitsLong2025}
 jwt.expiration=86400000
 
 # Groq AI Configuration (Free API - get key at https://console.groq.com)
+# Set the GROQ_API_KEY environment variable or replace the placeholder below
 groq.api.key=${GROQ_API_KEY:your-groq-api-key-here}
 groq.api.url=https://api.groq.com/openai/v1/chat/completions
 groq.model=llama-3.3-70b-versatile

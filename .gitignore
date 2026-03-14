@@ -65,6 +65,10 @@ bin/
 *.env.local
 *.env.production
 
+# Spring Boot local overrides (may contain real API keys)
+spring-boot-backend/src/main/resources/application-local.properties
+spring-boot-backend/src/main/resources/application-dev.properties
+
 # -------- Logs --------
 *.log
 logs/
